@@ -1,67 +1,87 @@
-import React, { Component } from 'react';
-// import Counter from './Counter/';
-// import Dropdown from './Dropdown/';
-// import ColorPicker from './ColorPicker';
-// import TodoList from './TodoList';
-// import initialTodos from './todos.json';
-import Feedback from './Feedback';
+import { Component } from 'react';
+import { Statistics } from './Statistics/Statistics';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+// import { Box } from './common/Box';
+// import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+// import { Statistics } from './Statistics/Statistics';
+// import { Section } from './Section/Section';
+// import { Notification } from './Message/Notification';
 
-class App extends Component {
-  // state = {
-  //   todos: initialTodos,
-  // };
+export class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  };
 
-  // deleteTodo = todoId => {
-  //   this.setState(prevState => ({
-  //     todos: prevState.todos.filter(todo => todo.id !== todoId),
-  //   }));
-  // };
+  handleGood = () => {
+    this.setState(prevState => {
+      return {
+        good: prevState.good + 1,
+      };
+    });
+  };
+  handleNeutral = () => {
+    this.setState(prevState => {
+      return {
+        neutral: prevState.neutral + 1,
+      };
+    });
+  };
 
+  handleBad = () => {
+    this.setState(prevState => {
+      return {
+        bad: prevState.bad + 1,
+      };
+    });
+  };
+
+  countTotalFeedback = ({ good, neutral, bad }) => {
+    return good + neutral + bad;
+  };
+
+  countPositiveFeedbackPercentage = ({ total, good }) => {
+    return Math.round((good / total) * 100);
+  };
+
+  onLeaveFeedback = event => {
+    const { name } = event.target;
+    this.setState(prevState => {
+      return {
+        [name]: prevState[name] + 1,
+      };
+    });
+  };
   render() {
-    //   const { todos } = this.state;
-    //   const totalTodoCounr = todos.length;
-    //   const completedTodos = todos.reduce(
-    //     (total, todo) => (todo.completed ? total + 1 : total),
-    //     0
-    //   );
+    const { good, neutral, bad } = this.state;
+    const total = this.countTotalFeedback(this.state);
+    const positivePercentage = this.countPositiveFeedbackPercentage({
+      total,
+      good,
+    });
 
     return (
-      <>
-        {/* // <h1>Стан компонента</h1> */}
-        {/* <Counter initialValue={10} />
-      <Dropdown />
-      <ColorPicker options={colorPickerOptions} /> */}
-        {/* <TodoList todos={todos} onDeleteTodo={this.deleteTodo} /> */}
-        {/* <div>
-          <p>Загальна кількість :{totalTodoCounr}</p>
-          <p>Кількість виконаних :{completedTodos}</p>
-        </div> */}
-        <Feedback />
-      </>
+      <div>
+        <section>
+          <h1>Please leave feedback</h1>
+          <FeedbackOptions
+            options={Object.keys(this.state)}
+            onLeaveFeedback={this.onLeaveFeedback}
+          />
+        </section>
+        <section>
+          <h1>Statistics</h1>
+
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={total}
+            positivePercentage={positivePercentage}
+          />
+        </section>
+      </div>
     );
   }
 }
-export default App;
-// ==================================
-
-// export const App = () => {
-//   return (
-//     <>
-//       <h1>Стан компонента</h1>
-//       {/* <Counter initialValue={10} />
-//       <Dropdown />
-//       <ColorPicker options={colorPickerOptions} /> */}
-//       <TodoList />
-//     </>
-//   );
-// };
-// ==================================
-
-// const colorPickerOptions = [
-//   { label: 'red', color: '#F44336' },
-//   { label: 'green', color: '#4CAf50' },
-//   { label: 'blue', color: '#2196F3' },
-//   { label: 'grey', color: '#607D88' },
-//   { label: 'pink', color: '#E91E63' },
-//   { label: 'indigo', color: '#3F51B5' },
-// ];
